@@ -17,12 +17,18 @@ namespace JsonApiNet
         public UserStatus? UserStatus { get; set; }
         public int? UserStatusId { get; set; }
 
+
+        [HasMany]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IList<Message>? Messages { get; set; }
+
+        [HasMany]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public IList<ReadReceipt>? ReadReceipts { get; set; }
+
         [HasOne]
         public Company? Company { get; set; }
         public int? CompanyId { get; set; }
 
-        [HasMany]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public IList<Message> Messages { get; set; }
     }
 }
