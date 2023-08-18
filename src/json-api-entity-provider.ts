@@ -14,6 +14,7 @@ import { JsonApiToManyRelationship } from './json-api-to-many-relationship';
 import { JsonApiToOneRelationship } from './json-api-to-one-relationship';
 import { JsonApiNetMetadataExtractor } from './metadata-extractors/json-api-net-metadata-extractor';
 import { JsonApiNetPaginateExpressionVisitor } from './paginate-expression-visitors/json-api-net-paginate-expression-visitor';
+import { JsonApiManyToManyRelationship } from './json-api-many-to-many-relationship';
 
 /**
  * Json api implementation of entity provider.
@@ -328,6 +329,33 @@ export class JsonApiEntityProvider implements EntityProvider
     public async executeBatchRemoveCommand<TEntity extends Entity>(batchRemoveCommand: BatchRemoveCommand<TEntity>): Promise<void>
     {
         throw new CommandNotSupportedError(batchRemoveCommand, this);
+    }
+
+    /**
+     * Creates json api to many relationship.
+     * 
+     * @param {EntitySet<TEntity>} entitySet Entity set.
+     * @param {TEntity} entity Entity.
+     * @param {IncludeCollectionClause<TEntity, TRelationship>} includeCollectionClause Include collection clause.
+     * 
+     * @returns {JsonApiToManyRelationship<TEntity, TRelationship>} Json api to many relationship for provided entity.
+     */
+    public createJsonApiManyToManyRelationship<TEntity extends Entity, TRelationship extends Entity, TPivot extends Entity>(
+        entitySet: EntitySet<TEntity>,
+        entity: TEntity,
+        includeCollectionClause: IncludeCollectionClause<TEntity, TRelationship>,
+        includePivotClause: IncludeCollectionClause<TEntity, TPivot>
+    ): JsonApiToManyRelationship<TEntity, TRelationship>
+    {
+        const browseCommand = entitySet.includeCollection(includeCollectionClause).build();
+        const includeExpression = browseCommand.includeExpression!;
+        const propertyInfo = includeExpression.propertyInfo;
+        
+        const pivotBrowseCommand = entitySet.includeCollection(includePivotClause).build();
+        const pivotIncludeExpression = pivotBrowseCommand.includeExpression!;
+        const pivotPropertyInfo = pivotIncludeExpression.propertyInfo;
+
+        return new JsonApiManyToManyRelationship<TEntity, TRelationship, TPivot>(this, entitySet, entity, propertyInfo, pivotPropertyInfo);
     }
 
     /**

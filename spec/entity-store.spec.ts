@@ -86,6 +86,7 @@ export class User extends JsonApiEntity
     @Property(UserStatus) public userStatus?: UserStatus;
     @Property(Company) public company?: Company;
     @Property(EntityCollection, [Message]) public messages: EntityCollection<Message>;
+    @Property(EntityCollection, [Message]) public replies: EntityCollection<Message>;
 
     public constructor(@Inject('name') name: string, @Inject('position') position: number)
     {
@@ -94,6 +95,7 @@ export class User extends JsonApiEntity
         this.name = name;
         this.position = position;
         this.messages = new EntityCollection<Message>();
+        this.replies = new EntityCollection<Message>();
 
         return;
     }

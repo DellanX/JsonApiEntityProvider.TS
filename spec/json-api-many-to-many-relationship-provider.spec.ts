@@ -20,7 +20,7 @@ async function setupRelationshipTest()
     // Create a User
     const user = await addUser(userSet);
     // Create 3 initial Messages
-    const userMessages = jsonApiEntityProvider.createJsonApiToManyRelationship(userSet, user, u => u.messages);
+    const userMessages = jsonApiEntityProvider.createJsonApiManyToManyRelationship(userSet, user, u => u.replies, u => u.messages);
     const setupCount = 3;
     const messages = [...Array(setupCount).keys()].map(() => createMessage(user));
     const addedMessages = await messageSet.bulkAdd(messages);
