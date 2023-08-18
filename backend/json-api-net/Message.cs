@@ -1,5 +1,6 @@
 using JsonApiDotNetCore.Resources;
 using JsonApiDotNetCore.Resources.Annotations;
+using System.Text.Json.Serialization;
 
 namespace JsonApiNet
 {
@@ -17,6 +18,10 @@ namespace JsonApiNet
 
         [HasMany]
         public IList<Message>? Messages { get; set; }
+
+        [HasMany]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public IList<ReadReceipt>? ReadReceipts { get; set; }
 
         public int? UserId { get; set; }
         public int? MessageId { get; set; }
